@@ -17,6 +17,7 @@ import {
     Marker,
     Popup,
     useMapEvents,
+    ZoomControl,
 } from "react-leaflet";
 import L from "leaflet";
 import type { Trip } from "~/db/schema";
@@ -75,49 +76,47 @@ interface TripMapProps {
     onMapClick?: (lat: number, lng: number) => void;
 }
 
+// ... imports
+import { LocationButton } from "./LocationButton";
+
+// ... existing code
+
 export default function TripMap({ trips, onMapClick }: TripMapProps) {
-    const [isClient, setIsClient] = useState(false);
-
-    // 確保只在客戶端渲染
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
-
-    if (!isClient) {
-        return (
-            <div className="flex items-center justify-center w-full h-full bg-gray-900">
-                <div className="text-gray-400 text-lg">🗺️ 載入地圖中...</div>
-            </div>
-        );
-    }
+    // ... existing code
 
     return (
         <MapContainer
             center={[25.034, 121.564]} // 預設中心：台北 101
             zoom={13}
             className="w-full h-full"
-            zoomControl={true}
+            zoomControl={false} // 關閉預設縮放控制項，以便自訂佈局 (或是保持開啟但調整按鈕位置)
         >
-            {/* OpenStreetMap 地圖圖層 —— 免費且開源的地圖底圖 */}
+            {/* OpenStreetMap 地圖圖層 */}
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
+            {/* 恢復縮放控制項，設定位置 */}
+            <ZoomControl position="bottomright" />
+
+            {/* 定位按鈕 */}
+            <LocationButton />
+
             {/* 監聽地圖點擊事件 */}
             {onMapClick && <MapClickHandler onMapClick={onMapClick} />}
 
-            {/* 渲染所有打卡點 Marker */}
+            {/* ... markers ... */}
             {trips.map((trip) => (
+                // ... existing marker code
                 <Marker
                     key={trip.id}
                     position={[trip.latitude, trip.longitude]}
                     icon={tripIcon}
                 >
-                    {/* 點擊 Marker 後彈出的回憶卡片 */}
+                    {/* ... popup content ... */}
                     <Popup className="trip-popup" maxWidth={320} minWidth={280}>
                         <div className="trip-card">
-                            {/* 照片區域 */}
                             <div className="trip-card-photo">
                                 <img
                                     src={getPhotoUrl(trip.photoKey)}
@@ -126,27 +125,19 @@ export default function TripMap({ trips, onMapClick }: TripMapProps) {
                                     loading="lazy"
                                 />
                             </div>
-
-                            {/* 地點名稱 */}
                             <h3 className="trip-card-title">{trip.locationName}</h3>
-
-                            {/* AI 氛圍描述 */}
                             {trip.aiVibe && (
                                 <div className="trip-card-vibe">
                                     <span className="trip-card-vibe-label">✨ AI 氛圍感知</span>
                                     <p className="trip-card-vibe-text">{trip.aiVibe}</p>
                                 </div>
                             )}
-
-                            {/* 使用者筆記 */}
                             {trip.userNote && (
                                 <div className="trip-card-note">
                                     <span className="trip-card-note-label">📝 旅行筆記</span>
                                     <p className="trip-card-note-text">{trip.userNote}</p>
                                 </div>
                             )}
-
-                            {/* 打卡時間 */}
                             <div className="trip-card-time">
                                 🕐{" "}
                                 {trip.createdAt
