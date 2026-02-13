@@ -21,7 +21,7 @@
 		{
 			"binding": "DB",
 			"database_name": "nomad-edge-db",
-			"database_id": "local-dev-placeholder",
+			"database_id": "9e5bb335-a697-407e-8f00-fecf97350f0a",
 			"migrations_dir": "./drizzle/migrations"
 		}
 	],
