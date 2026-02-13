@@ -1,0 +1,42 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "nomad-edge",
+	"compatibility_date": "2025-04-04",
+	"main": "./workers/app.ts",
+	"vars": {
+		"APP_NAME": "NomadEdge"
+	},
+	"observability": {
+		"enabled": true
+	},
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	// ===== D1 資料庫綁定 =====
+	// 這是 Cloudflare 的 SQLite 資料庫服務
+	// binding: 程式碼中用來存取的變數名（env.DB）
+	// database_name: 在 Cloudflare Dashboard 上顯示的名稱
+	// database_id: 建立 D1 後自動生成的 ID（本地開發用不到）
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "nomad-edge-db",
+			"database_id": "local-dev-placeholder",
+			"migrations_dir": "./drizzle/migrations"
+		}
+	],
+	// ===== R2 儲存桶綁定 =====
+	// 這是 Cloudflare 的物件儲存服務（類似 AWS S3）
+	// 用來存放使用者上傳的旅遊照片
+	"r2_buckets": [
+		{
+			"binding": "BUCKET",
+			"bucket_name": "nomad-edge-photos"
+		}
+	],
+	// ===== Workers AI 綁定 =====
+	// 讓我們可以在 Worker 中直接呼叫 AI 模型
+	"ai": {
+		"binding": "AI"
+	}
+}
