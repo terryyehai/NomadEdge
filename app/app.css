@@ -583,6 +583,82 @@ body {
   display: inline-block;
 }
 
+/* ===== 定位按鈕自訂樣式 ===== */
+.custom-location-btn {
+  position: absolute;
+  bottom: 100px; /* 在桌面版稍微提高，避免與 ZoomControl 重疊 */
+  right: 12px;
+  z-index: 1000;
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-glass-border);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex !important; /* 強制顯示 */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--color-text);
+  font-size: 1.25rem;
+}
+
+.custom-location-btn:hover {
+  background-color: var(--color-surface-light);
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.custom-location-btn:active {
+  transform: scale(0.95);
+}
+
+/* 行動版調整：確保按鈕不會被底部提示遮擋，且位置更適合拇指點擊 */
+@media (max-width: 640px) {
+  .custom-location-btn {
+    bottom: 80px;
+    right: 16px;
+    width: 48px;
+    height: 48px;
+    font-size: 1.5rem;
+  }
+}
+
+/* 目前位置標記的波紋動畫 */
+.current-location-marker-inner {
+  width: 16px;
+  height: 16px;
+  background-color: #3b82f6;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+  position: relative;
+}
+
+.current-location-marker-inner::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  border: 2px solid #3b82f6;
+  animation: marker-pulse 2s infinite;
+}
+
+@keyframes marker-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
 /* ===== 響應式設計 ===== */
 @media (max-width: 640px) {
   .app-header {
